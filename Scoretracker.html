@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chadwick STUCO Competition Board</title>
+    <style>
+        :root {
+            --navy-dark: #07162c;
+            --navy-main: #0B2240;
+            --navy-light: #15355e;
+            --sky-blue: #4A90E2;
+            --sky-bright: #87CEEB;
+            --white: #ffffff;
+            --gold: #d4af37;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--navy-dark);
+            /* Uses your local uploaded background photo subtly */
+            background-image: linear-gradient(rgba(7, 22, 44, 0.9), rgba(11, 34, 64, 0.93)), 
+                              url('image_475ac3.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--white);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .tv-screen {
+            background-color: rgba(11, 34, 64, 0.85);
+            border: 4px solid var(--navy-light);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+            width: 100%;
+            max-width: 1150px;
+            padding: 25px;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .header-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(135, 206, 235, 0.4);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+
+        /* Uses your local uploaded Grade level logo */
+        .brand-logo-left {
+            width: 85px;
+            height: 85px;
+            background-image: url('CI2027 Logo.jpg');
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            flex-shrink: 0;
+        }
+
+        /* Renders a clean digital image link of a leaping blue dolphin */
+        .brand-logo-right {
+            width: 90px;
+            height: 90px;
+            background-image: url('https://img.icons8.com/color/180/dolphin.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+        }
+
+        .main-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--white);
+            border: none;
+            background: transparent;
+            text-align: center;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        .main-title:focus { outline: none; }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .app-grid { grid-template-columns: 1fr; }
+        }
+
+        /* The Scoring Panel/Table */
+        .control-panel {
+            background: rgba(7, 22, 44, 0.75);
+            border: 1px solid rgba(123, 174, 226, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .team-strip {
+            background: rgba(11, 34, 64, 0.9);
+            border: 1px solid rgba(123, 174, 226, 0.2);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-identity { display: flex; gap: 8px; align-items: center; }
+        
+        .name-box {
+            font-weight: bold;
+            font-size: 15px;
+            background: var(--navy-dark);
+            border: 1px solid var(--navy-light);
+            color: white;
+            padding: 6px;
+            border-radius: 6px;
+            width: 100px;
+        }
+
+        .palette-select {
+            background: var(--navy-dark);
+            color: var(--sky-bright);
+            border: 1px solid var(--navy-light);
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .math-controls { display: flex; align-items: center; gap: 6px; }
+        
+        .btn {
+            font-weight: bold;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            padding: 7px 10px;
+        }
+        .btn-neg { background: #334155; }
+        .btn-pos-1 { background: var(--navy-light); border-color: var(--sky-blue); }
+        .btn-pos-5 { background: #1e3a8a; border-color: var(--sky-bright); }
+
+        .score-counter {
+            font-size: 20px;
+            font-weight: 900;
+            width: 40px;
+            text-align: center;
+            color: var(--sky-bright);
+        }
+
+        .reset-trigger {
+            width: 100%;
+            background: transparent;
+            border: 1px dashed rgba(255,255,255,0.2);
+            color: #94a3b8;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Realtime Graphs Panel */
+        .arena-display {
+            background: rgba(7, 22, 44, 0.5);
+            border: 2px solid rgba(123, 174, 226, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 380px;
+        }
+
+        .stadium-floor {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 310px;
+            border-bottom: 4px solid var(--sky-blue);
+        }
+
+        .column-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 22%;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .pillar {
+            width: 100%;
+            border-radius: 10px 10px 0 0;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-bottom: none;
+            position: relative;
+            height: 10px;
+            min-height: 8px;
+            transition: height 0.25s ease;
+        }
+
+        .pillar.leader-high {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(212,175,55,0.4);
+        }
+        .pillar.leader-high::before {
+            content: '👑 LEADER';
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            font-weight: bold;
+            color: var(--navy-dark);
+            background: var(--gold);
+            padding: 2px 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        .pillar-score {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .pillar-lbl {
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: var(--sky-bright);
+            text-align: center;
+            width: 100%;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tv-screen">
+        
+        <header class="header-banner">
+            <div class="brand-logo-left"></div>
+
+            <div style="flex: 1; text-align: center;">
+                <input type="text" value="CHADWICK STUCO COMPETITION" id="boardTitle" class="main-title">
+            </div>
+
+            <div class="brand-logo-right"></div>
+        </header>
+
+        <div class="app-grid">
+            
+            <section class="control-panel">
+                
+                <div class="team-strip" id="strip-0" style="border-left: 5px solid #4A90E2;">
+                    <div class="team-identity">
+                        <input type="text" value="Team A" oninput="editLabel(0, this.value)" class="name-box">
+                        <select onchange="editColor(0, this.value)" class="palette-select">
+                            <option value="#4A90E2">🩵 Sky Blue</option>
+                            <option value="#87CEEB">💎 Ice Blue</option>
+                            <option value="#ffffff">⚪ Pure White</option>
+                            <option value="#15355e">⚓ Navy Blue</option>
+                            <option value="#2563eb">🌐 Deep Blue</option>
+                            <option value="#d4af37">🔱 Gold</option>
+                            <option value="#94a3b8">🔘 Silver Gray</option>
+                            <option value="#e11d48">🔴 Crimson Red</option>
+                            <option value="#059669">🟢 Emerald Green</option>
+                            <option value="#f97316">🟠 Orange</option>
+                        </select>
+                    </div>
+                    <div class="math-controls">
+                        <button onclick="changePoints(0, -5)" class="btn btn-neg">-5</button>
+                        <button onclick="changePoints(0, -1)" class="btn btn-neg">-1</button>
+                        <span id="display-0" class="score-counter">0</span>
+                        <button onclick="changePoints(0, 1)" class="btn btn-pos-1">+1</button>
+                        <button onclick="changePoints(0, 5)" class="btn btn-pos-5">+5</button>
+                    </div>
+                </div>
+
+                <div class="team-strip" id="strip-1" style="border-left: 5px solid #87CEEB;">
+                    <div class="team-identity">
+                        <input type="text" value="Team B" oninput="editLabel(1, this.value)" class="name-box">
+                        <select onchange="editColor(1, this.value)" class="palette-select">
+                            <option value="#87CEEB">💎 Ice Blue</option>
+                            <option value="#4A90E2">🩵 Sky Blue</option>
+                            <option value="#ffffff">⚪ Pure White</option>
+                            <option value="#15355e">⚓ Navy Blue</option>
+                            <option value="#2563eb">🌐 Deep Blue</option>
+                            <option value="#d4af37">🔱 Gold</option>
+                            <option value="#94a3b8">🔘 Silver Gray</option>
+                            <option value="#e11d48">🔴 Crimson Red</option>
+                            <option value="#059669">🟢 Emerald Green</option>
+                            <option value="#f97316">🟠 Orange</option>
+                        </select>
+                    </div>
+                    <div class="math-controls">
+                        <button onclick="changePoints(1, -5)" class="btn btn-neg">-5</button>
+                        <button onclick="changePoints(1, -1)" class="btn btn-neg">-1</button>
+                        <span id="display-1" class="score-counter">0</span>
+                        <button onclick="changePoints(1, 1)" class="btn btn-pos-1">+1</button>
+                        <button onclick="changePoints(1, 5)" class="btn btn-pos-5">+5</button>
+                    </div>
+                </div>
+
+                <div class="team-strip" id="strip-2" style="border-left: 5px solid #ffffff;">
+                    <div class="team-identity">
+                        <input type="text" value="Team C" oninput="editLabel(2, this.value)" class="name-box">
+                        <select onchange="editColor(2, this.value)" class="palette-select">
+                            <option value="#ffffff">⚪ Pure White</option>
+                            <option value="#4A90E2">🩵 Sky Blue</option>
+                            <option value="#87CEEB">💎 Ice Blue</option>
+                            <option value="#15355e">⚓ Navy Blue</option>
+                            <option value="#2563eb">🌐 Deep Blue</option>
+                            <option value="#d4af37">🔱 Gold</option>
+                            <option value="#94a3b8">🔘 Silver Gray</option>
+                            <option value="#e11d48">🔴 Crimson Red</option>
+                            <option value="#059669">🟢 Emerald Green</option>
+                            <option value="#f97316">🟠 Orange</option>
+                        </select>
+                    </div>
+                    <div class="math-controls">
+                        <button onclick="changePoints(2, -5)" class="btn btn-neg">-5</button>
+                        <button onclick="changePoints(2, -1)" class="btn btn-neg">-1</button>
+                        <span id="display-2" class="score-counter">0</span>
+                        <button onclick="changePoints(2, 1)" class="btn btn-pos-1">+1</button>
+                        <button onclick="changePoints(2, 5)" class="btn btn-pos-5">+5</button>
+                    </div>
+                </div>
+
+                <div class="team-strip" id="strip-3" style="border-left: 5px solid #15355e;">
+                    <div class="team-identity">
+                        <input type="text" value="Team D" oninput="editLabel(3, this.value)" class="name-box">
+                        <select onchange="editColor(3, this.value)" class="palette-select">
+                            <option value="#15355e">⚓ Navy Blue</option>
+                            <option value="#4A90E2">🩵 Sky Blue</option>
+                            <option value="#87CEEB">💎 Ice Blue</option>
+                            <option value="#ffffff">⚪ Pure White</option>
+                            <option value="#2563eb">🌐 Deep Blue</option>
+                            <option value="#d4af37">🔱 Gold</option>
+                            <option value="#94a3b8">🔘 Silver Gray</option>
+                            <option value="#e11d48">🔴 Crimson Red</option>
+                            <option value="#059669">🟢 Emerald Green</option>
+                            <option value="#f97316">🟠 Orange</option>
+                        </select>
+                    </div>
+                    <div class="math-controls">
+                        <button onclick="changePoints(3, -5)" class="btn btn-neg">-5</button>
+                        <button onclick="changePoints(3, -1)" class="btn btn-neg">-1</button>
+                        <span id="display-3" class="score-counter">0</span>
+                        <button onclick="changePoints(3, 1)" class="btn btn-pos-1">+1</button>
+                        <button onclick="changePoints(3, 5)" class="btn btn-pos-5">+5</button>
+                    </div>
+                </div>
+
+                <button onclick="clearMatrix()" class="reset-trigger">🔁 Reset All Standings to 0</button>
+            </section>
+            
+            <section class="arena-display">
+                <div class="stadium-floor">
+                    
+                    <div class="column-wrapper">
+                        <div id="pillar-0" class="pillar"><span id="p-score-0" class="pillar-score">0</span></div>
+                        <div id="p-lbl-0" class="pillar-lbl">Team A</div>
+                    </div>
+
+                    <div class="column-wrapper">
+                        <div id="pillar-1" class="pillar"><span id="p-score-1" class="pillar-score">0</span></div>
+                        <div id="p-lbl-1" class="pillar-lbl">Team B</div>
+                    </div>
+
+                    <div class="column-wrapper">
+                        <div id="pillar-2" class="pillar"><span id="p-score-2" class="pillar-score">0</span></div>
+                        <div id="p-lbl-2" class="pillar-lbl">Team C</div>
+                    </div>
+
+                    <div class="column-wrapper">
+                        <div id="pillar-3" class="pillar"><span id="p-score-3" class="pillar-score">0</span></div>
+                        <div id="p-lbl-3" class="pillar-lbl">Team D</div>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        let numericScores = [0, 0, 0, 0];
+        let colorArray = ["#4A90E2", "#87CEEB", "#ffffff", "#15355e"];
+
+        function changePoints(index, amount) {
+            numericScores[index] += amount;
+            document.getElementById('display-' + index).innerText = numericScores[index];
+            document.getElementById('p-score-' + index).innerText = numericScores[index];
+            repaintPillars();
+        }
+
+        function editLabel(index, stringText) {
+            document.getElementById('p-lbl-' + index).innerText = stringText;
+        }
+
+        function editColor(index, codeHex) {
+            colorArray[index] = codeHex;
+            document.getElementById('strip-' + index).style.borderLeftColor = codeHex;
+            repaintPillars();
+        }
+
+        function repaintPillars() {
+            let baselineMax = Math.max(numericScores[0], numericScores[1], numericScores[2], numericScores[3]);
+            let anchorDivisor = baselineMax > 0 ? baselineMax : 1;
+
+            for (let i = 0; i < 4; i++) {
+                let currentItemScore = numericScores[i] > 0 ? numericScores[i] : 0;
+                let finalVisualHeight = (currentItemScore / anchorDivisor) * 100;
+                
+                if (finalVisualHeight === 0) { finalVisualHeight = 3; }
+
+                let block = document.getElementById('pillar-' + i);
+                block.style.height = finalVisualHeight + "%";
+                block.style.background = "linear-gradient(0deg, var(--navy-dark) 0%, " + colorArray[i] + " 100%)";
+
+                if (numericScores[i] === baselineMax && baselineMax > 0) {
+                    block.classList.add('leader-high');
+                } else {
+                    block.classList.remove('leader-high');
+                }
+            }
+        }
+
+        function clearMatrix() {
+            if (confirm("Reset layout points matrices to zero?")) {
+                numericScores = [0, 0, 0, 0];
+                for (let i = 0; i < 4; i++) {
+                    document.getElementById('display-' + i).innerText = 0;
+                    document.getElementById('p-score-' + i).innerText = 0;
+                }
+                repaintPillars();
+            }
+        }
+
+        repaintPillars();
+    </script>
+</body>
+</html>
